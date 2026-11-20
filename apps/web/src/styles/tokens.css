@@ -1,0 +1,71 @@
+/*
+ * Jetons de la direction artistique « Ludothèque chaleureuse ».
+ * Source : docs/direction-artistique.html. Ne pas écrire de couleur en dur ailleurs.
+ */
+:root {
+  /* Couleurs, thème clair (« lampe allumée ») */
+  --papier: #f2eadb;
+  --carton: #fbf7ee;
+  --encre: #3b2418;
+  --encre-douce: #6e6255;
+  --sapin: #23503d;
+  --terre: #a3452a;
+  --miel: #d9a441; /* décor uniquement en thème clair */
+  --kraft: #b89468; /* décor uniquement en thème clair */
+  --tranche: #8a6b47;
+  --sur-accent: #fbf7ee;
+  --sur-miel: #3b2418;
+
+  /* Typographies */
+  --f-titre: 'Young Serif', 'Iowan Old Style', Georgia, serif;
+  --f-texte: 'Atkinson Hyperlegible Next Variable', system-ui, sans-serif;
+  --f-chiffres: 'Atkinson Hyperlegible Mono Variable', ui-monospace, Menlo, monospace;
+
+  /* Échelle typographique (ratio 1,25) */
+  --t-xs: 0.8rem;
+  --t-s: 0.9rem;
+  --t-m: 1.05rem;
+  --t-l: 1.3rem;
+  --t-xl: 1.75rem;
+  --t-2xl: 2.4rem;
+  --t-3xl: clamp(2.8rem, 8vw, 4.5rem);
+
+  /* Formes : angles nets et « tranche » de carton sous les fiches et les boutons */
+  --rayon: 6px;
+  --epaisseur: 3px;
+
+  color-scheme: light;
+}
+
+/* Thème sombre (« lampe éteinte ») : suit le système, sauf choix explicite. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --papier: #17110c;
+    --carton: #221a13;
+    --encre: #f1e7d5;
+    --encre-douce: #b3a593;
+    --sapin: #86c2a3;
+    --terre: #ec8c66;
+    --miel: #e8ba5e;
+    --kraft: #7a6148;
+    --tranche: #0b0806;
+    --sur-accent: #17110c;
+    --sur-miel: #17110c;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --papier: #17110c;
+  --carton: #221a13;
+  --encre: #f1e7d5;
+  --encre-douce: #b3a593;
+  --sapin: #86c2a3;
+  --terre: #ec8c66;
+  --miel: #e8ba5e;
+  --kraft: #7a6148;
+  --tranche: #0b0806;
+  --sur-accent: #17110c;
+  --sur-miel: #17110c;
+  color-scheme: dark;
+}

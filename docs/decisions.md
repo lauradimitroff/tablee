@@ -83,3 +83,11 @@ Le détail se trouve dans `docs/architecture.md`.
 - **Décision** : `typescript` est fixé à la version exacte 6.0.x à la racine du monorepo.
 - **Pourquoi** : TypeScript 7 (la réécriture en Go) est la version par défaut sur npm, mais Angular 22 exige `>=6.0 <6.1` et la CLI NestJS 12 utilise `~6.0`. Une seule version pour tout le dépôt évite les doublons et les erreurs de compilation.
 - **À revoir** : quand Angular et NestJS prendront en charge TypeScript 7.
+
+## D10. Le socle Angular (20/11/2026)
+
+- **Décision** : Angular 22, généré avec la CLI, en mode zoneless, avec Vitest et sans SSR. Le préfixe des composants est `tb-`.
+- **Polices auto-hébergées** avec Fontsource, au lieu de Google Fonts.
+  - Pourquoi : aucune requête vers Google, donc pas de transfert de l'adresse IP des visiteurs (RGPD). Le site ne dépend pas non plus d'un service tiers.
+- **Jetons de la DA** en variables CSS (`src/styles/tokens.css`), avec le thème sombre selon le réglage du système.
+- **Configuration héritée** : le projet Angular reprend les règles TypeScript de `tsconfig.base.json`, plus `strictTemplates`, qui vérifie aussi les types dans les gabarits HTML.

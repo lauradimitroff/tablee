@@ -8,7 +8,7 @@ Tablée aide un groupe d'amis à trouver une date, voir qui vient, choisir les j
 
 ## Stack
 
-- **Front** : Angular (`apps/web`), à venir
+- **Front** : Angular 22 (`apps/web`)
 - **API** : NestJS + Prisma (`apps/api`), à venir
 - **Base** : PostgreSQL (Neon)
 - **Partagé** : `packages/shared`, types et constantes communs
@@ -24,6 +24,8 @@ npm install            # installe tout le monorepo
 npm run build:shared   # compile packages/shared
 npm run typecheck      # vérifie les types de tous les paquets
 npm run format:check   # vérifie le formatage (Prettier)
+npm start -w @tablee/web # lance le front sur http://localhost:4200
+npm test -w @tablee/web  # tests unitaires du front (Vitest)
 ```
 
 ## Documentation
