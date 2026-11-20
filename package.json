@@ -1,0 +1,23 @@
+{
+  "name": "tablee",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Tablée : l'organisateur de soirées jeux de votre groupe d'amis.",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build:shared": "npm run build -w @tablee/shared",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "^3.10.1",
+    "typescript": "6.0.3"
+  }
+}

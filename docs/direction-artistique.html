@@ -1,0 +1,810 @@
+<title>Livret Tablée</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,600;0,700;1,400&family=Atkinson+Hyperlegible+Mono:wght@400;600&display=swap">
+<style>
+/* Concept : la page est une boîte de jeu. Couvercle illustré, puis le livret de règles,
+   avec son vocabulaire (contenu de la boîte, matériel, mise en place, variante). */
+:root {
+  /* Couleurs, thème « lampe allumée » */
+  --papier: #F2EADB;      /* fond : papier du livret */
+  --carton: #FBF7EE;      /* surfaces : fiches cartonnées */
+  --encre: #3B2418;       /* texte : brou de noix */
+  --encre-douce: #6E6255; /* texte secondaire */
+  --sapin: #23503D;       /* action principale */
+  --terre: #A3452A;       /* accent : terre cuite */
+  --miel: #D9A441;        /* surlignage, décor (jamais du texte) */
+  --kraft: #B89468;       /* bordures, bois */
+  --tranche: #8A6B47;     /* épaisseur du carton sous les fiches */
+  --plateau: #A9A091;     /* carton gris de la planche prédécoupée */
+  --sur-accent: #FBF7EE;
+  --sur-miel: #3B2418;
+  --couvercle: #23503D;
+  --sur-couvercle: #F2EADB;
+  --halo: rgba(255, 214, 140, .38);
+
+  /* Typographies */
+  --f-titre: "Young Serif", "Iowan Old Style", Georgia, serif;
+  --f-texte: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, sans-serif;
+  --f-chiffres: "Atkinson Hyperlegible Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Échelle typographique (ratio 1,25) */
+  --t-xs: .8rem; --t-s: .9rem; --t-m: 1.05rem; --t-l: 1.3rem; --t-xl: 1.75rem; --t-2xl: 2.4rem; --t-3xl: clamp(2.8rem, 8vw, 5.2rem);
+
+  --rayon: 6px;
+  --epaisseur: 3px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --papier: #17110C; --carton: #221A13; --encre: #F1E7D5; --encre-douce: #B3A593;
+    --sapin: #86C2A3; --terre: #EC8C66; --miel: #E8BA5E; --kraft: #7A6148; --tranche: #0B0806;
+    --plateau: #3A3129; --sur-accent: #17110C; --sur-miel: #17110C;
+    --couvercle: #183A2D; --sur-couvercle: #F1E7D5; --halo: rgba(255, 190, 110, .10);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --papier: #17110C; --carton: #221A13; --encre: #F1E7D5; --encre-douce: #B3A593;
+  --sapin: #86C2A3; --terre: #EC8C66; --miel: #E8BA5E; --kraft: #7A6148; --tranche: #0B0806;
+  --plateau: #3A3129; --sur-accent: #17110C; --sur-miel: #17110C;
+  --couvercle: #183A2D; --sur-couvercle: #F1E7D5; --halo: rgba(255, 190, 110, .10);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--papier);
+  color: var(--encre);
+  font-family: var(--f-texte);
+  font-size: var(--t-m);
+  line-height: 1.6;
+  transition: background-color .5s ease, color .5s ease;
+}
+h1, h2, h3 { font-family: var(--f-titre); font-weight: 400; line-height: 1.15; text-wrap: balance; margin: 0; }
+p { margin: 0; }
+.mono { font-family: var(--f-chiffres); font-variant-numeric: tabular-nums; }
+:focus-visible { outline: 3px solid var(--terre); outline-offset: 3px; border-radius: 2px; }
+
+.page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 80px;
+  display: grid;
+  gap: 88px;
+}
+
+/* ───────── Couvercle ───────── */
+.couvercle {
+  position: relative;
+  background: var(--couvercle);
+  color: var(--sur-couvercle);
+  border-radius: 10px;
+  padding: clamp(20px, 4vw, 44px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 32px;
+  align-items: center;
+  box-shadow: 0 6px 0 var(--tranche), 0 22px 40px -18px rgba(0,0,0,.45);
+  overflow: hidden;
+  transition: background-color .5s ease;
+}
+.couvercle::after { /* le bord du couvercle, comme une boîte réelle */
+  content: ""; position: absolute; inset: 10px; border: 1.5px solid color-mix(in srgb, var(--sur-couvercle) 30%, transparent); border-radius: 6px; pointer-events: none;
+}
+.edition { font-family: var(--f-chiffres); font-size: var(--t-xs); letter-spacing: .14em; text-transform: uppercase; opacity: .85; }
+.logo { display: flex; align-items: center; gap: 14px; margin-top: 18px; }
+.logo svg { width: 64px; height: 64px; flex: none; }
+.logo h1 { font-size: var(--t-3xl); letter-spacing: -.01em; }
+.slogan { font-size: var(--t-l); margin-top: 10px; max-width: 26ch; }
+.cartouches { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+.cartouche {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1.5px solid color-mix(in srgb, var(--sur-couvercle) 55%, transparent);
+  border-radius: 999px; padding: 6px 14px 6px 10px; font-size: var(--t-s);
+}
+.cartouche svg { width: 20px; height: 20px; }
+.cartouche b { font-family: var(--f-chiffres); font-weight: 600; }
+.scene { width: 100%; height: auto; display: block; }
+.scene .bois { fill: var(--kraft); }
+.scene .veine { stroke: var(--tranche); stroke-width: 1.4; fill: none; opacity: .45; }
+.scene .chaise { fill: var(--tranche); }
+.scene .chaise.toi { fill: var(--terre); }
+.scene .carte { fill: var(--carton); stroke: var(--tranche); stroke-width: 1.2; }
+.scene .de { fill: var(--carton); stroke: var(--tranche); stroke-width: 1.2; }
+.scene .point { fill: var(--encre); }
+.scene .feuille { fill: var(--carton); }
+.scene .ligne { stroke: var(--kraft); stroke-width: 1.2; }
+.scene .gribouillis { font-family: var(--f-chiffres); font-size: 11px; fill: var(--encre); }
+.scene .m-sapin { fill: var(--sapin); } .scene .m-terre { fill: var(--terre); } .scene .m-miel { fill: var(--miel); }
+.scene .halo { transition: opacity .6s ease; }
+
+.interrupteur {
+  position: absolute; top: max(18px, env(safe-area-inset-top, 0px)); right: 22px; z-index: 1;
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--carton); color: var(--encre);
+  border: 0; border-radius: 999px; padding: 7px 14px 7px 9px;
+  font: 600 var(--t-s)/1 var(--f-texte);
+  box-shadow: 0 var(--epaisseur) 0 var(--tranche);
+  cursor: pointer;
+}
+.interrupteur:active { transform: translateY(var(--epaisseur)); box-shadow: 0 0 0 var(--tranche); }
+.interrupteur .bulbe { width: 18px; height: 18px; border-radius: 50%; background: var(--miel); box-shadow: 0 0 10px var(--miel); transition: all .3s; }
+:root[data-eteint="1"] .interrupteur .bulbe { background: var(--plateau); box-shadow: none; }
+
+/* ───────── Sections du livret ───────── */
+.chapitre { display: grid; gap: 28px; }
+.entete { display: grid; gap: 10px; max-width: 64ch; }
+.rubrique { font-family: var(--f-chiffres); font-size: var(--t-xs); letter-spacing: .14em; text-transform: uppercase; color: var(--terre); }
+.entete h2 { font-size: var(--t-2xl); }
+.entete p { color: var(--encre-douce); }
+
+/* Fiche cartonnée : la signature. Une bordure fine et une « tranche » pleine dessous, sans flou. */
+.fiche {
+  background: var(--carton);
+  border: 1px solid color-mix(in srgb, var(--kraft) 70%, transparent);
+  border-radius: var(--rayon);
+  box-shadow: 0 var(--epaisseur) 0 var(--tranche);
+  padding: 22px;
+  min-width: 0;
+}
+
+/* Contenu de la boîte */
+.inventaire { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0; border-top: 2px solid var(--encre); }
+.inventaire li { list-style: none; display: grid; grid-template-columns: 3.2ch 1fr; gap: 10px; padding: 14px 4px; border-bottom: 1px dashed var(--kraft); }
+.inventaire { padding: 0; margin: 0; }
+.inventaire .qte { font-family: var(--f-chiffres); font-weight: 600; color: var(--terre); }
+.inventaire small { display: block; color: var(--encre-douce); font-size: var(--t-s); }
+
+/* But du jeu : principes */
+.principes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 22px; }
+.principes h3 { font-size: var(--t-l); margin-bottom: 8px; }
+.principes p { color: var(--encre-douce); font-size: var(--t-m); }
+
+/* Planche prédécoupée : les couleurs */
+.planche {
+  background-color: var(--plateau);
+  background-image: radial-gradient(color-mix(in srgb, var(--encre) 12%, transparent) 1px, transparent 1.2px);
+  background-size: 7px 7px;
+  border-radius: var(--rayon);
+  padding: clamp(18px, 3vw, 32px);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 26px 18px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--encre) 18%, transparent);
+}
+.jeton { display: grid; justify-items: center; gap: 10px; text-align: center; }
+.jeton .rond {
+  width: 104px; height: 104px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-family: var(--f-titre); font-size: 1.05rem;
+  box-shadow:
+    0 0 0 3px var(--plateau),
+    0 0 0 4.5px color-mix(in srgb, var(--encre) 45%, transparent),
+    0 4px 0 4.5px color-mix(in srgb, var(--encre) 30%, transparent);
+  position: relative;
+  transition: transform .25s ease;
+}
+/* Les petites attaches qui retiennent le jeton dans la planche */
+.jeton .rond::before, .jeton .rond::after {
+  content: ""; position: absolute; width: 6px; height: 4px; background: var(--plateau); top: 50%; translate: 0 -50%;
+}
+.jeton .rond::before { left: -6px; } .jeton .rond::after { right: -6px; }
+.jeton:hover .rond { transform: translateY(-4px) rotate(-4deg); }
+.jeton .nom { font-weight: 700; font-size: var(--t-s); }
+.jeton .infos { font-size: var(--t-xs); line-height: 1.45; color: var(--encre); background: var(--carton); border-radius: 4px; padding: 6px 8px; width: 100%; }
+.jeton .hex { font-family: var(--f-chiffres); display: block; }
+.jeton .ratio { font-family: var(--f-chiffres); display: block; color: var(--encre-douce); }
+.legende-planche { font-size: var(--t-s); color: var(--encre-douce); max-width: 70ch; }
+
+/* Typographies */
+.specimens { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 22px; }
+.specimen { display: grid; gap: 14px; align-content: start; }
+.specimen .role { font-family: var(--f-chiffres); font-size: var(--t-xs); letter-spacing: .12em; text-transform: uppercase; color: var(--encre-douce); }
+.specimen .nom-police { font-weight: 700; }
+.specimen .grand-titre { font-family: var(--f-titre); font-size: var(--t-2xl); line-height: 1.1; }
+.specimen .grand-texte { font-size: var(--t-l); }
+.specimen .alphabet { font-size: var(--t-s); color: var(--encre-douce); word-break: break-word; }
+.specimen p.pourquoi { font-size: var(--t-s); color: var(--encre-douce); border-top: 1px dashed var(--kraft); padding-top: 12px; }
+.feuille-score { width: 100%; border-collapse: collapse; font-family: var(--f-chiffres); font-variant-numeric: tabular-nums; font-size: var(--t-s); }
+.feuille-score th { text-align: left; font-weight: 600; border-bottom: 2px solid var(--encre); padding: 4px 6px; }
+.feuille-score td { border-bottom: 1px solid color-mix(in srgb, var(--kraft) 60%, transparent); padding: 5px 6px; }
+.feuille-score td:last-child, .feuille-score th:last-child { text-align: right; }
+.feuille-score tr.gagne td { background: color-mix(in srgb, var(--miel) 35%, transparent); font-weight: 600; }
+.echelle { display: grid; gap: 4px; border-top: 1px dashed var(--kraft); padding-top: 12px; }
+.echelle div { display: flex; align-items: baseline; gap: 12px; white-space: nowrap; overflow: hidden; }
+.echelle span.mono { font-size: var(--t-xs); color: var(--encre-douce); width: 3.5ch; flex: none; }
+
+/* Pictogrammes */
+.pictos { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 14px; }
+.picto { display: grid; justify-items: center; gap: 8px; padding: 18px 10px; text-align: center; }
+.picto svg { width: 32px; height: 32px; color: var(--encre); }
+.picto span { font-size: var(--t-s); }
+.picto small { font-size: var(--t-xs); color: var(--encre-douce); line-height: 1.3; }
+svg.ico { fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Mise en place : écrans */
+.ecrans { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 26px; align-items: start; }
+.telephone {
+  background: var(--papier);
+  border: 1.5px solid var(--encre);
+  border-radius: 26px;
+  padding: 14px 14px 20px;
+  display: grid; gap: 14px;
+  box-shadow: 0 var(--epaisseur) 0 var(--encre);
+  min-width: 0;
+}
+.telephone .barre { display: flex; justify-content: space-between; align-items: center; font-size: var(--t-xs); color: var(--encre-douce); padding: 0 6px; }
+.telephone .barre b { font-family: var(--f-titre); font-weight: 400; font-size: var(--t-m); color: var(--encre); }
+.telephone h3 { font-size: var(--t-l); padding: 0 4px; }
+.sous { font-size: var(--t-s); color: var(--encre-douce); padding: 0 4px; }
+.legende-ecran { font-size: var(--t-s); color: var(--encre-douce); padding: 0 6px; }
+
+.creneau { padding: 14px; display: grid; gap: 10px; }
+.creneau .quand { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.creneau .quand strong { font-family: var(--f-titre); font-weight: 400; font-size: var(--t-m); }
+.creneau .quand .mono { font-size: var(--t-xs); color: var(--encre-douce); }
+.reponses { display: flex; gap: 6px; flex-wrap: wrap; }
+.puce {
+  display: inline-flex; align-items: center; gap: 5px;
+  font: 600 var(--t-xs)/1 var(--f-texte);
+  border-radius: 999px; padding: 6px 10px 6px 8px;
+  border: 1.5px solid var(--kraft); background: transparent; color: var(--encre);
+}
+.puce svg { width: 14px; height: 14px; }
+.puce.oui { background: var(--sapin); border-color: var(--sapin); color: var(--sur-accent); }
+.puce.peut-etre { background: var(--miel); border-color: var(--miel); color: var(--sur-miel); }
+.puce.non { border-style: dashed; color: var(--encre-douce); }
+.convives { display: flex; align-items: center; gap: 4px; font-size: var(--t-xs); color: var(--encre-douce); }
+.avatar {
+  width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center;
+  font: 700 .66rem/1 var(--f-texte); color: var(--sur-accent); background: var(--terre);
+  margin-right: -8px; box-shadow: 0 0 0 2px var(--carton);
+}
+.avatar:nth-child(2) { background: var(--sapin); } .avatar:nth-child(3) { background: var(--tranche); }
+.convives .avatar:last-of-type { margin-right: 6px; }
+
+.bouton {
+  display: inline-flex; justify-content: center; align-items: center; gap: 8px;
+  font: 700 var(--t-s)/1 var(--f-texte);
+  background: var(--sapin); color: var(--sur-accent);
+  border: 0; border-radius: var(--rayon); padding: 13px 16px;
+  box-shadow: 0 var(--epaisseur) 0 color-mix(in srgb, var(--sapin) 55%, #000);
+  cursor: pointer; width: 100%;
+}
+.bouton:active { transform: translateY(var(--epaisseur)); box-shadow: none; }
+
+.bandeau { display: flex; align-items: center; gap: 8px; font-size: var(--t-xs); background: var(--carton); border: 1px dashed var(--kraft); border-radius: var(--rayon); padding: 8px 10px; }
+.bandeau .direct { width: 8px; height: 8px; border-radius: 50%; background: var(--sapin); animation: pouls 1.8s ease-in-out infinite; flex: none; }
+@keyframes pouls { 50% { opacity: .3; } }
+
+.classement { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.classement li {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px;
+  padding: 10px 10px 10px 8px;
+}
+.rang {
+  width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
+  font: 600 var(--t-s)/1 var(--f-chiffres);
+  background: var(--terre); color: var(--sur-accent);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--sur-accent) 35%, transparent);
+}
+.classement li:nth-child(n+2) .rang { background: var(--carton); color: var(--encre); box-shadow: inset 0 0 0 1.5px var(--kraft); }
+.jeu-nom { font-weight: 700; font-size: var(--t-s); line-height: 1.3; }
+.jeu-meta { font-size: var(--t-xs); color: var(--encre-douce); display: flex; gap: 10px; flex-wrap: wrap; }
+.jeu-meta span { display: inline-flex; align-items: center; gap: 3px; }
+.jeu-meta svg { width: 13px; height: 13px; }
+.deplacer { display: flex; gap: 4px; align-items: center; }
+.deplacer button {
+  width: 32px; height: 32px; border-radius: 5px; border: 1px solid var(--kraft); background: var(--papier); color: var(--encre);
+  display: grid; place-items: center; cursor: pointer; padding: 0;
+}
+.deplacer button:disabled { opacity: .35; cursor: default; }
+.deplacer svg { width: 16px; height: 16px; }
+.poignee { color: var(--encre-douce); width: 16px; height: 16px; }
+.classement li.vient-de-bouger { animation: pose .35s ease; }
+@keyframes pose { from { transform: translateY(-3px) rotate(-1deg); } }
+
+.stat { padding: 18px; display: grid; gap: 6px; }
+.stat .titre-stat { font-family: var(--f-chiffres); font-size: var(--t-xs); letter-spacing: .1em; text-transform: uppercase; color: var(--terre); }
+.stat .qui { font-family: var(--f-titre); font-size: var(--t-xl); line-height: 1.1; }
+.stat .detail { font-size: var(--t-s); color: var(--encre-douce); }
+.stat .jauge { height: 10px; border-radius: 999px; background: color-mix(in srgb, var(--kraft) 35%, transparent); overflow: hidden; margin-top: 6px; }
+.stat .jauge i { display: block; height: 100%; background: var(--sapin); border-radius: inherit; }
+.stat.miel { background: var(--miel); color: var(--sur-miel); border-color: transparent; }
+.stat.miel .titre-stat, .stat.miel .detail { color: var(--sur-miel); }
+.medaille { display: flex; justify-content: space-between; align-items: start; gap: 8px; }
+.medaille svg { width: 34px; height: 34px; color: var(--terre); flex: none; }
+
+/* Variante nuit */
+.variante { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 26px; align-items: center; }
+.variante .fiche p + p { margin-top: 10px; }
+.duo { display: grid; grid-template-columns: 1fr 1fr; border-radius: var(--rayon); overflow: hidden; border: 1px solid var(--kraft); }
+.duo > div { padding: 18px; display: grid; gap: 8px; font-size: var(--t-s); }
+.duo .clair { background: #F2EADB; color: #3B2418; }
+.duo .sombre { background: #17110C; color: #F1E7D5; }
+.duo .mini { font-family: "Young Serif", Georgia, serif; font-size: var(--t-l); }
+.duo .pastilles { display: flex; gap: 6px; }
+.duo .pastilles i { width: 22px; height: 22px; border-radius: 50%; display: block; }
+
+/* Fin de partie */
+.fin { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 22px; align-items: start; }
+.liste-non { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+.liste-non li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; font-size: var(--t-s); }
+.liste-non svg { width: 20px; height: 20px; color: var(--terre); margin-top: 2px; }
+.liste-non b { font-weight: 700; }
+.slogans { display: grid; gap: 12px; }
+.tranche-boite {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--couvercle); color: var(--sur-couvercle);
+  border-radius: 4px; padding: 12px 16px;
+  box-shadow: 0 var(--epaisseur) 0 var(--tranche);
+}
+.tranche-boite .lettre { font-family: var(--f-titre); font-size: var(--t-l); flex: none; }
+.tranche-boite span { font-size: var(--t-s); }
+.tranche-boite small { margin-left: auto; font-family: var(--f-chiffres); font-size: var(--t-xs); opacity: .8; flex: none; }
+.question { font-size: var(--t-s); color: var(--encre-douce); }
+.question b { color: var(--encre); }
+
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@media (max-width: 760px) {
+  .couvercle { grid-template-columns: minmax(0, 1fr); padding-top: 64px; }
+  .variante { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+
+<div class="page">
+
+  <!-- ═════════ COUVERCLE ═════════ -->
+  <header class="couvercle">
+    <button class="interrupteur" id="interrupteur" type="button" aria-pressed="false">
+      <span class="bulbe" aria-hidden="true"></span><span id="interrupteur-texte">Éteindre la lampe</span>
+    </button>
+
+    <div>
+      <p class="edition">Direction artistique · Lab n° 2</p>
+      <div class="logo">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <!-- La table vue de dessus, et ses convives. Le point terre cuite, c'est toi. -->
+          <rect x="17" y="21" width="30" height="22" rx="5" fill="var(--sur-couvercle)"/>
+          <circle cx="25" cy="11" r="5" fill="var(--sur-couvercle)"/>
+          <circle cx="39" cy="11" r="5" fill="var(--sur-couvercle)"/>
+          <circle cx="25" cy="53" r="5" fill="var(--sur-couvercle)"/>
+          <circle cx="39" cy="53" r="5" fill="var(--terre)"/>
+          <circle cx="7" cy="32" r="5" fill="var(--sur-couvercle)"/>
+          <circle cx="57" cy="32" r="5" fill="var(--sur-couvercle)"/>
+        </svg>
+        <h1>Tablée</h1>
+      </div>
+      <p class="slogan">Soirées jeux</p>
+      <div class="cartouches">
+        <span class="cartouche">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.6"/><path d="M12 8.4c-2.6 0-3.6 1.4-6.8 2.3-1.3.4-1.2 2.2.1 2.4l3.2.3-2.3 6c-.3.8.2 1.3.9 1.3h3l1.9-3.7 1.9 3.7h3c.7 0 1.2-.5.9-1.3l-2.3-6 3.2-.3c1.3-.2 1.4-2 .1-2.4-3.2-.9-4.2-2.3-6.8-2.3z"/></svg>
+          <b>2–12</b> joueurs
+        </span>
+        <span class="cartouche">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12M6 21h12M7 3c0 5 5 6 5 9s-5 4-5 9M17 3c0 5-5 6-5 9s5 4 5 9"/></svg>
+          <b>1</b> soirée
+        </span>
+        <span class="cartouche">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><circle cx="8.5" cy="8.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+          dès <b>14</b> ans
+        </span>
+      </div>
+    </div>
+
+    <svg class="scene" viewBox="0 0 600 400" role="img" aria-label="Une table en bois vue de dessus, avec six chaises, des cartes, un dé, des pions et une feuille de score.">
+      <defs>
+        <radialGradient id="halo" cx="50%" cy="48%" r="55%">
+          <stop offset="0" stop-color="var(--halo)"/>
+          <stop offset="1" stop-color="rgba(0,0,0,0)"/>
+        </radialGradient>
+      </defs>
+      <ellipse class="halo" cx="300" cy="200" rx="300" ry="200" fill="url(#halo)"/>
+      <!-- chaises -->
+      <rect class="chaise" x="170" y="22" width="64" height="46" rx="12"/>
+      <rect class="chaise" x="366" y="22" width="64" height="46" rx="12"/>
+      <rect class="chaise" x="170" y="332" width="64" height="46" rx="12"/>
+      <rect class="chaise toi" x="366" y="332" width="64" height="46" rx="12"/>
+      <rect class="chaise" x="40" y="168" width="46" height="64" rx="12"/>
+      <rect class="chaise" x="514" y="168" width="46" height="64" rx="12"/>
+      <!-- plateau de la table -->
+      <rect class="bois" x="100" y="80" width="400" height="240" rx="18"/>
+      <path class="veine" d="M120 120c80-10 140 12 220 2s110-14 140-6M118 175c60 8 130-10 210 0s120 12 150 2M122 238c90-8 150 14 230 4s100-10 128-2M126 292c70 6 140-8 220-2"/>
+      <!-- cartes -->
+      <g transform="rotate(-12 175 150)"><rect class="carte" x="148" y="112" width="54" height="78" rx="5"/></g>
+      <g transform="rotate(6 205 150)"><rect class="carte" x="180" y="112" width="54" height="78" rx="5"/></g>
+      <g transform="rotate(18 240 155)"><rect class="carte" x="212" y="118" width="54" height="78" rx="5"/><circle cx="239" cy="157" r="12" fill="var(--terre)" opacity=".85"/></g>
+      <!-- dé -->
+      <g transform="rotate(14 330 160)">
+        <rect class="de" x="310" y="140" width="40" height="40" rx="8"/>
+        <circle class="point" cx="320" cy="150" r="3.4"/><circle class="point" cx="340" cy="150" r="3.4"/>
+        <circle class="point" cx="330" cy="160" r="3.4"/>
+        <circle class="point" cx="320" cy="170" r="3.4"/><circle class="point" cx="340" cy="170" r="3.4"/>
+      </g>
+      <!-- pions -->
+      <g transform="translate(380 120) scale(1.7)"><circle class="m-sapin" cx="12" cy="5" r="3"/><path class="m-sapin" d="M12 8.4c-2.6 0-3.6 1.4-6.8 2.3-1.3.4-1.2 2.2.1 2.4l3.2.3-2.3 6c-.3.8.2 1.3.9 1.3h3l1.9-3.7 1.9 3.7h3c.7 0 1.2-.5.9-1.3l-2.3-6 3.2-.3c1.3-.2 1.4-2 .1-2.4-3.2-.9-4.2-2.3-6.8-2.3z"/></g>
+      <g transform="translate(424 150) scale(1.7) rotate(-18 12 12)"><circle class="m-terre" cx="12" cy="5" r="3"/><path class="m-terre" d="M12 8.4c-2.6 0-3.6 1.4-6.8 2.3-1.3.4-1.2 2.2.1 2.4l3.2.3-2.3 6c-.3.8.2 1.3.9 1.3h3l1.9-3.7 1.9 3.7h3c.7 0 1.2-.5.9-1.3l-2.3-6 3.2-.3c1.3-.2 1.4-2 .1-2.4-3.2-.9-4.2-2.3-6.8-2.3z"/></g>
+      <g transform="translate(372 196) scale(1.7) rotate(10 12 12)"><circle class="m-miel" cx="12" cy="5" r="3"/><path class="m-miel" d="M12 8.4c-2.6 0-3.6 1.4-6.8 2.3-1.3.4-1.2 2.2.1 2.4l3.2.3-2.3 6c-.3.8.2 1.3.9 1.3h3l1.9-3.7 1.9 3.7h3c.7 0 1.2-.5.9-1.3l-2.3-6 3.2-.3c1.3-.2 1.4-2 .1-2.4-3.2-.9-4.2-2.3-6.8-2.3z"/></g>
+      <!-- feuille de score -->
+      <g transform="rotate(-5 200 260)">
+        <rect class="feuille" x="140" y="214" width="150" height="92" rx="3"/>
+        <line class="ligne" x1="150" y1="240" x2="280" y2="240"/><line class="ligne" x1="150" y1="260" x2="280" y2="260"/><line class="ligne" x1="150" y1="280" x2="280" y2="280"/>
+        <text class="gribouillis" x="150" y="234">Prune</text><text class="gribouillis" x="252" y="234">142</text>
+        <text class="gribouillis" x="150" y="254">Malik</text><text class="gribouillis" x="252" y="254">128</text>
+        <text class="gribouillis" x="150" y="274">Ysé</text><text class="gribouillis" x="252" y="274">151</text>
+        <circle cx="266" cy="270" r="13" fill="none" stroke="var(--terre)" stroke-width="1.6"/>
+      </g>
+    </svg>
+  </header>
+
+  <!-- ═════════ CONTENU DE LA BOÎTE ═════════ -->
+  <section class="chapitre" aria-labelledby="t-contenu">
+    <div class="entete">
+      <p class="rubrique">Contenu de la boîte</p>
+      <h2 id="t-contenu">Ludothèque chaleureuse</h2>
+    </div>
+    <ul class="inventaire">
+      <li><span class="qte mono">1</span><span>logotype</span></li>
+      <li><span class="qte mono">9</span><span>couleurs</span></li>
+      <li><span class="qte mono">3</span><span>typographies</span></li>
+      <li><span class="qte mono">6</span><span>pictogrammes</span></li>
+      <li><span class="qte mono">3</span><span>écrans</span></li>
+      <li><span class="qte mono">1</span><span>variante de nuit</span></li>
+    </ul>
+  </section>
+
+  <!-- ═════════ BUT DU JEU ═════════ -->
+  <section class="chapitre" aria-labelledby="t-but">
+    <div class="entete">
+      <p class="rubrique">But du jeu</p>
+      <h2 id="t-but">Trois règles</h2>
+    </div>
+    <div class="principes">
+      <article class="fiche">
+        <h3>Une table, pas un tableau de bord</h3>
+        <p>Des cartes, pas des graphiques.</p>
+      </article>
+      <article class="fiche">
+        <h3>Du carton, pas du verre</h3>
+        <p>Surfaces mates, tranche pleine, aucun flou.</p>
+      </article>
+      <article class="fiche">
+        <h3>Lisible sous une lampe</h3>
+        <p>Contraste AA, jamais la couleur seule.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ═════════ MATÉRIEL : COULEURS ═════════ -->
+  <section class="chapitre" aria-labelledby="t-couleurs">
+    <div class="entete">
+      <p class="rubrique">Matériel · Couleurs</p>
+      <h2 id="t-couleurs">La planche de jetons</h2>
+      <p>Contraste mesuré sur le fond de page.</p>
+    </div>
+    <div class="planche" id="planche">
+      <div class="jeton" data-token="--papier" data-role="Fond de page"></div>
+      <div class="jeton" data-token="--carton" data-role="Fiches, surfaces"></div>
+      <div class="jeton" data-token="--encre" data-role="Texte principal"></div>
+      <div class="jeton" data-token="--encre-douce" data-role="Texte secondaire"></div>
+      <div class="jeton" data-token="--sapin" data-role="Action, « oui »"></div>
+      <div class="jeton" data-token="--terre" data-role="Accent, 1re place"></div>
+      <div class="jeton" data-token="--miel" data-role="Surlignage, « peut-être »"></div>
+      <div class="jeton" data-token="--kraft" data-role="Bordures, bois"></div>
+      <div class="jeton" data-token="--tranche" data-role="Épaisseur du carton"></div>
+    </div>
+    <p class="legende-planche">Miel et kraft : décor uniquement.</p>
+  </section>
+
+  <!-- ═════════ MATÉRIEL : TYPOGRAPHIES ═════════ -->
+  <section class="chapitre" aria-labelledby="t-typo">
+    <div class="entete">
+      <p class="rubrique">Matériel · Typographies</p>
+      <h2 id="t-typo">Boîte, règles, score</h2>
+    </div>
+    <div class="specimens">
+      <article class="fiche specimen">
+        <p class="role">Titres</p>
+        <p class="nom-police">Young Serif</p>
+        <p class="grand-titre">Qui apporte les Aventuriers&nbsp;?</p>
+        <p class="alphabet" style="font-family: var(--f-titre)">Aa Bb Éé Çç Œœ 0123456789 « »</p>
+        <p class="pourquoi">Titres uniquement, jamais en petit.</p>
+      </article>
+      <article class="fiche specimen">
+        <p class="role">Texte</p>
+        <p class="nom-police">Atkinson Hyperlegible Next</p>
+        <p class="grand-texte">Proposez trois dates, la tablée répond. Vous fixez la soirée en un geste.</p>
+        <p class="alphabet">Il1 0O rn m · Aa Bb Éé Çç · <b>Gras</b> · <i>Italique</i></p>
+        <p class="pourquoi">Dessinée pour la lisibilité (Braille Institute).</p>
+      </article>
+      <article class="fiche specimen">
+        <p class="role">Chiffres et scores</p>
+        <p class="nom-police">Atkinson Hyperlegible Mono</p>
+        <table class="feuille-score">
+          <caption class="sr-only">Exemple de feuille de score</caption>
+          <thead><tr><th scope="col">Joueur</th><th scope="col">Manche 3</th><th scope="col">Total</th></tr></thead>
+          <tbody>
+            <tr class="gagne"><td>Ysé</td><td>+48</td><td>151</td></tr>
+            <tr><td>Prune</td><td>+37</td><td>142</td></tr>
+            <tr><td>Malik</td><td>+41</td><td>128</td></tr>
+            <tr><td>Jo</td><td>+12</td><td>96</td></tr>
+          </tbody>
+        </table>
+        <div class="echelle" aria-label="Échelle typographique">
+          <div><span class="mono">40</span><span style="font-family: var(--f-titre); font-size: var(--t-2xl)">Soirée</span></div>
+          <div><span class="mono">28</span><span style="font-family: var(--f-titre); font-size: var(--t-xl)">Soirée jeux</span></div>
+          <div><span class="mono">21</span><span style="font-size: var(--t-l)">Soirée jeux chez Malik</span></div>
+          <div><span class="mono">17</span><span>Soirée jeux chez Malik, samedi</span></div>
+          <div><span class="mono">14</span><span style="font-size: var(--t-s)">Soirée jeux chez Malik, samedi 6 décembre</span></div>
+        </div>
+        <p class="pourquoi">Scores alignés en colonnes.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ═════════ MATÉRIEL : PICTOGRAMMES ═════════ -->
+  <section class="chapitre" aria-labelledby="t-pictos">
+    <div class="entete">
+      <p class="rubrique">Matériel · Pictogrammes</p>
+      <h2 id="t-pictos">Les symboles des boîtes</h2>
+    </div>
+    <div class="pictos">
+      <div class="fiche picto"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.6"/><path d="M12 8.4c-2.6 0-3.6 1.4-6.8 2.3-1.3.4-1.2 2.2.1 2.4l3.2.3-2.3 6c-.3.8.2 1.3.9 1.3h3l1.9-3.7 1.9 3.7h3c.7 0 1.2-.5.9-1.3l-2.3-6 3.2-.3c1.3-.2 1.4-2 .1-2.4-3.2-.9-4.2-2.3-6.8-2.3z"/></svg><span>Joueurs</span></div>
+      <div class="fiche picto"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12M6 21h12M7 3c0 5 5 6 5 9s-5 4-5 9M17 3c0 5-5 6-5 9s5 4 5 9"/></svg><span>Durée</span></div>
+      <div class="fiche picto"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18h18M4.5 18 3 7.5l5 3.5 4-6 4 6 5-3.5L19.5 18"/></svg><span>Compétitif</span></div>
+      <div class="fiche picto"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2.5 20c0-3.3 2.4-5.6 5.5-5.6s5.5 2.3 5.5 5.6M10.5 20c0-3.3 2.4-5.6 5.5-5.6s5.5 2.3 5.5 5.6"/></svg><span>Coopératif</span></div>
+      <div class="fiche picto"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><circle cx="8.5" cy="8.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.2" fill="currentColor" stroke="none"/></svg><span>Catégorie</span></div>
+      <div class="fiche picto"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Soirée</span></div>
+    </div>
+  </section>
+
+  <!-- ═════════ MISE EN PLACE : ÉCRANS ═════════ -->
+  <section class="chapitre" aria-labelledby="t-ecrans">
+    <div class="entete">
+      <p class="rubrique">Mise en place</p>
+      <h2 id="t-ecrans">Trois écrans de la V1</h2>
+      <p>Les flèches du classement fonctionnent.</p>
+    </div>
+    <div class="ecrans">
+
+      <!-- Sondage -->
+      <div class="telephone">
+        <div class="barre"><b>Tablée</b><span>Les Pions du Mardi</span></div>
+        <h3>Soirée chez Malik</h3>
+        <p class="sous">Proposée par Malik · 3 h disponibles</p>
+        <article class="fiche creneau">
+          <div class="quand"><strong>Sam. 6 déc.</strong><span class="mono">20:00</span></div>
+          <div class="reponses" role="group" aria-label="Ta réponse pour samedi 6 décembre">
+            <span class="puce oui"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>Oui</span>
+            <span class="puce">? Peut-être</span>
+            <span class="puce">Non</span>
+          </div>
+          <div class="convives"><span class="avatar">YS</span><span class="avatar">MA</span><span class="avatar">PR</span>5 oui · 1 peut-être</div>
+        </article>
+        <article class="fiche creneau">
+          <div class="quand"><strong>Ven. 12 déc.</strong><span class="mono">19:30</span></div>
+          <div class="reponses" role="group" aria-label="Ta réponse pour vendredi 12 décembre">
+            <span class="puce">Oui</span>
+            <span class="puce peut-etre">? Peut-être</span>
+            <span class="puce">Non</span>
+          </div>
+          <div class="convives"><span class="avatar">JO</span><span class="avatar">NO</span>2 oui · 3 peut-être</div>
+        </article>
+        <article class="fiche creneau">
+          <div class="quand"><strong>Sam. 13 déc.</strong><span class="mono">20:00</span></div>
+          <div class="reponses" role="group" aria-label="Ta réponse pour samedi 13 décembre">
+            <span class="puce">Oui</span>
+            <span class="puce">? Peut-être</span>
+            <span class="puce non"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>Non</span>
+          </div>
+          <div class="convives"><span class="avatar">BA</span>1 oui · 4 non</div>
+        </article>
+      </div>
+
+      <!-- Vote -->
+      <div class="telephone">
+        <div class="barre"><b>Tablée</b><span>Sam. 6 déc.</span></div>
+        <h3>Ton classement</h3>
+        <div class="bandeau"><span class="direct" aria-hidden="true"></span>En direct · <span class="mono">4</span>&nbsp;participants sur&nbsp;<span class="mono">6</span>&nbsp;ont voté</div>
+        <ol class="classement" id="classement" aria-label="Ton classement des jeux, de 1 à 5">
+          <li class="fiche" data-nom="Azul"><span class="rang">1</span><div><p class="jeu-nom">Azul</p><p class="jeu-meta"><span>2–4 j.</span><span>45 min</span><span>de Noor</span></p></div><div class="deplacer"></div></li>
+          <li class="fiche" data-nom="Les Aventuriers du Rail"><span class="rang">2</span><div><p class="jeu-nom">Les Aventuriers du Rail</p><p class="jeu-meta"><span>2–5 j.</span><span>60 min</span><span>de Malik</span></p></div><div class="deplacer"></div></li>
+          <li class="fiche" data-nom="Hanabi"><span class="rang">3</span><div><p class="jeu-nom">Hanabi</p><p class="jeu-meta"><span>2–5 j.</span><span>25 min</span><span>coop · de Jo</span></p></div><div class="deplacer"></div></li>
+          <li class="fiche" data-nom="Codenames"><span class="rang">4</span><div><p class="jeu-nom">Codenames</p><p class="jeu-meta"><span>4–8 j.</span><span>15 min</span><span>de Prune</span></p></div><div class="deplacer"></div></li>
+          <li class="fiche" data-nom="Dixit"><span class="rang">5</span><div><p class="jeu-nom">Dixit</p><p class="jeu-meta"><span>3–6 j.</span><span>30 min</span><span>d'Ysé</span></p></div><div class="deplacer"></div></li>
+        </ol>
+        <p class="sr-only" aria-live="polite" id="annonce"></p>
+        <button class="bouton" type="button">Valider mon classement</button>
+      </div>
+
+      <!-- Statistiques -->
+      <div class="telephone">
+        <div class="barre"><b>Tablée</b><span>Les Pions du Mardi</span></div>
+        <h3>Ce que racontent vos parties</h3>
+        <p class="sous"><span class="mono">47</span> parties depuis mars</p>
+        <article class="fiche stat">
+          <div class="medaille">
+            <div>
+              <p class="titre-stat">Champion·ne de la tablée</p>
+              <p class="qui">Ysé</p>
+            </div>
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18h18M4.5 18 3 7.5l5 3.5 4-6 4 6 5-3.5L19.5 18"/></svg>
+          </div>
+          <p class="detail"><span class="mono">9</span> victoires sur <span class="mono">16</span> parties, soit <span class="mono">56 %</span>.</p>
+          <div class="jauge" role="img" aria-label="56 % de victoires"><i style="width:56%"></i></div>
+        </article>
+        <article class="fiche stat">
+          <p class="titre-stat">Le jeu fétiche</p>
+          <p class="qui">Azul</p>
+          <p class="detail">Sorti <span class="mono">11</span> fois. Noor ne le range plus.</p>
+        </article>
+        <article class="fiche stat miel">
+          <p class="titre-stat">Le jeu oublié</p>
+          <p class="qui">Dixit</p>
+          <p class="detail">Pas sorti depuis <span class="mono">14</span> mois. On le ressort samedi ?</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ VARIANTE NUIT ═════════ -->
+  <section class="chapitre" aria-labelledby="t-nuit">
+    <div class="entete">
+      <p class="rubrique">Variante</p>
+      <h2 id="t-nuit">La partie de nuit</h2>
+    </div>
+    <div class="variante">
+      <div class="fiche">
+        <p>La même table, à minuit, sous une seule lampe.</p>
+      </div>
+      <div class="duo" aria-hidden="true">
+        <div class="clair">
+          <span class="mini">Lampe allumée</span>
+          <span class="pastilles"><i style="background:#23503D"></i><i style="background:#A3452A"></i><i style="background:#D9A441"></i><i style="background:#B89468"></i></span>
+        </div>
+        <div class="sombre">
+          <span class="mini">Lampe éteinte</span>
+          <span class="pastilles"><i style="background:#86C2A3"></i><i style="background:#EC8C66"></i><i style="background:#E8BA5E"></i><i style="background:#7A6148"></i></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ FIN DE PARTIE ═════════ -->
+  <section class="chapitre" aria-labelledby="t-fin">
+    <div class="entete">
+      <p class="rubrique">Fin de partie</p>
+      <h2 id="t-fin">Interdits et choix</h2>
+    </div>
+    <div class="fin">
+      <article class="fiche">
+        <h3 style="font-size: var(--t-l); margin-bottom: 14px">On s'interdit</h3>
+        <ul class="liste-non">
+          <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg><span><b>Tuiles de chiffres, graphiques denses</b> (Atollo)</span></li>
+          <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg><span><b>3D, verre dépoli, dégradés</b> (Métamorphoses)</span></li>
+          <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg><span><b>Gris froid, bleu marine, Inter</b> (Pocki)</span></li>
+          <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg><span><b>Emojis en guise d.icônes</b></span></li>
+          <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg><span><b>Ombres floues, grands arrondis</b></span></li>
+          <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg><span><b>Copier la charte d.un éditeur de jeux</b></span></li>
+        </ul>
+      </article>
+      <article class="fiche">
+        <h3 style="font-size: var(--t-l); margin-bottom: 14px">Le slogan retenu</h3>
+        <div class="slogans">
+          <div class="tranche-boite"><span class="lettre">Tablée</span><span>· soirées jeux</span><small>retenu</small></div>
+        </div>
+        <h3 style="font-size: var(--t-l); margin: 26px 0 14px">Face à Pocki</h3>
+        <div class="duo" aria-label="Comparaison entre Pocki et Tablée">
+          <div style="background:#F6F7F9;color:#0F1B2D;font-family:Inter,system-ui,sans-serif">
+            <b>Pocki</b>
+            <span>Froid, marine, Inter, arrondi.</span>
+            <span class="pastilles"><i style="background:#F6F7F9;box-shadow:inset 0 0 0 1px #0F1B2D33"></i><i style="background:#1B365D"></i><i style="background:#0F1B2D"></i><i style="background:#5D6A7D"></i></span>
+          </div>
+          <div style="background:#F2EADB;color:#3B2418">
+            <b class="mini">Tablée</b>
+            <span>Chaud, sapin, serif, carton.</span>
+            <span class="pastilles"><i style="background:#F2EADB;box-shadow:inset 0 0 0 1px #3B241833"></i><i style="background:#23503D"></i><i style="background:#A3452A"></i><i style="background:#D9A441"></i></span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var media = window.matchMedia('(prefers-color-scheme: dark)');
+
+  /* ── La lampe : change le thème ── */
+  var btn = document.getElementById('interrupteur');
+  var txt = document.getElementById('interrupteur-texte');
+  function estSombre() {
+    var t = root.getAttribute('data-theme');
+    return t ? t === 'dark' : media.matches;
+  }
+  function majInterrupteur() {
+    var sombre = estSombre();
+    btn.setAttribute('aria-pressed', String(sombre));
+    txt.textContent = sombre ? 'Rallumer la lampe' : 'Éteindre la lampe';
+    root.setAttribute('data-eteint', sombre ? '1' : '0');
+  }
+  btn.addEventListener('click', function () {
+    root.setAttribute('data-theme', estSombre() ? 'light' : 'dark');
+    majInterrupteur();
+    requestAnimationFrame(majPlanche);
+  });
+
+  /* ── La planche : valeurs et contrastes calculés ── */
+  function lum(hex) {
+    var c = [1, 3, 5].map(function (i) { return parseInt(hex.slice(i, i + 2), 16) / 255; })
+      .map(function (v) { return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+  }
+  function ratio(a, b) {
+    var x = lum(a), y = lum(b);
+    return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
+  }
+  function lire(nom) { return getComputedStyle(root).getPropertyValue(nom).trim().toUpperCase(); }
+  function majPlanche() {
+    var fond = lire('--papier');
+    document.querySelectorAll('.jeton').forEach(function (j) {
+      var tok = j.dataset.token, val = lire(tok);
+      if (!/^#[0-9A-F]{6}$/.test(val)) return;
+      var r = ratio(val, fond);
+      var texteSur = ratio(val, lire('--encre')) > ratio(val, lire('--carton')) ? 'var(--encre)' : 'var(--carton)';
+      var verdict = tok === '--papier' ? 'fond de référence'
+        : r >= 4.5 ? r.toFixed(1).replace('.', ',') + ':1 · texte AA'
+        : r >= 3 ? r.toFixed(1).replace('.', ',') + ':1 · grands textes'
+        : r.toFixed(1).replace('.', ',') + ':1 · décor seul';
+      j.innerHTML =
+        '<div class="rond" style="background:' + val + ';color:' + texteSur + '">' + tok.replace('--', '') + '</div>' +
+        '<div class="infos"><span class="nom">' + j.dataset.role + '</span><span class="hex">' + val + '</span><span class="ratio">' + verdict + '</span></div>';
+    });
+  }
+  media.addEventListener('change', function () { majInterrupteur(); majPlanche(); });
+
+  /* ── Le classement : alternative clavier au glisser-déposer ── */
+  var liste = document.getElementById('classement');
+  var annonce = document.getElementById('annonce');
+  var fleche = function (d) {
+    return '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="' + (d === 'haut' ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6') + '"/></svg>';
+  };
+  function majClassement() {
+    Array.prototype.forEach.call(liste.children, function (li, i, tous) {
+      var nom = li.dataset.nom;
+      li.querySelector('.rang').textContent = i + 1;
+      li.querySelector('.deplacer').innerHTML =
+        '<svg class="ico poignee" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="6" r="1" fill="currentColor"/><circle cx="15" cy="6" r="1" fill="currentColor"/><circle cx="9" cy="12" r="1" fill="currentColor"/><circle cx="15" cy="12" r="1" fill="currentColor"/><circle cx="9" cy="18" r="1" fill="currentColor"/><circle cx="15" cy="18" r="1" fill="currentColor"/></svg>' +
+        '<button type="button" id="monter-' + i + '" data-sens="-1" aria-label="Monter ' + nom + '"' + (i === 0 ? ' disabled' : '') + '>' + fleche('haut') + '</button>' +
+        '<button type="button" id="descendre-' + i + '" data-sens="1" aria-label="Descendre ' + nom + '"' + (i === tous.length - 1 ? ' disabled' : '') + '>' + fleche('bas') + '</button>';
+    });
+  }
+  liste.addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-sens]');
+    if (!b) return;
+    var li = b.closest('li'), sens = Number(b.dataset.sens);
+    var cible = sens < 0 ? li.previousElementSibling : li.nextElementSibling;
+    if (!cible) return;
+    if (sens < 0) liste.insertBefore(li, cible); else liste.insertBefore(cible, li);
+    majClassement();
+    var pos = Array.prototype.indexOf.call(liste.children, li);
+    li.classList.remove('vient-de-bouger'); void li.offsetWidth; li.classList.add('vient-de-bouger');
+    annonce.textContent = li.dataset.nom + ' passe en position ' + (pos + 1) + ' sur 5.';
+    var suivant = li.querySelector('button[data-sens="' + sens + '"]:not([disabled])') || li.querySelector('button:not([disabled])');
+    if (suivant) suivant.focus();
+  });
+
+  majInterrupteur();
+  majClassement();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(majPlanche);
+  majPlanche();
+})();
+</script>
